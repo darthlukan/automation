@@ -1,0 +1,10 @@
+FROM base/devel:minimal
+Maintainer Brian Tomlinson <brian.tomlinson@linux.com>
+
+ADD mirrorlist /etc/pacman.d/mirrorlist
+ADD .bashrc /etc/skel
+RUN pacman-key --init && pacman-key --populate archlinux
+RUN pacman -Syyuu --noconfirm
+RUN pacman -S --noconfirm git rsync subversion mercurial go vim htop
+RUN pacman -Scc --noconfirm
+CMD ["/bin/bash"]
