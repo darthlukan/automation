@@ -1,0 +1,30 @@
+# Arch Linux + Go
+#
+# VERSION 0.0.1
+#
+# Basic Arch Linux container with Go set up
+#
+FROM base/devel:minimal
+
+MAINTAINER Brian Tomlinson <brian.tomlinson@linux.com>
+
+RUN pacman-key --refresh-keys && pacman -Syy --noprogressbar --noconfirm && \
+    pacman -S --force openssl --noconfirm && pacman -S pacman --noconfirm && \
+    pacman-db-upgrade && pacman -Suu --noconfirm --noprogressbar
+
+RUN pacman -S git subversion mercurial rsync go vim --noprogressbar --noconfirm && \
+    pacman -Scc --noconfirm
+
+ENV LC_ALL=en_US.UTF-8
+
+RUN useradd -m -g users -G wheel -s /bin/bash developer
+
+USER developer
+RUN mkdir -p /home/developer/go/bin /home/developer/go/pkg /home/developer/go/src
+
+ENV GOPATH /home/developer/go
+ENV PATH $PATH:$GOPATH/bin
+
+WORKDIR /home/developer
+
+ENTRYPOINT ["/bin/bash"]
